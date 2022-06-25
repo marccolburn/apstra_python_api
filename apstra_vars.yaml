@@ -1,0 +1,10 @@
+asn_ranges:
+  - name: 'test_pool1'
+    first: 400
+    last: 402
+  - name: 'test_pool2'
+    first: 403
+    last: 405
+  - name: 'test_pool3'
+    first: 406
+    last: 408

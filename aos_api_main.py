@@ -1,6 +1,13 @@
 from getpass import getpass
 from requests import request
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from pprint import pprint
+import requests
 import sys
+import yaml
+import pdb
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 def aos_login(api_base_url, aos_user, aos_pass):
@@ -27,6 +34,13 @@ def aos_put(api_url, headers, data):
         sys.exit('error: data post failed')
     return response
 
+def aos_get(api_url, headers):
+    '''GET against API resource to get information'''
+    response = request("GET", api_url, headers=headers, verify=False)
+    if response.status_code != 200:
+        sys.exit('error')
+    return response
+
 def aos_asn_pool_create_data(api_base_url, asn_range):
     '''Provides data structure and api path for creating ASN Pools'''
     data = '''
@@ -51,12 +65,14 @@ if __name__ == '__main__':
     aos_pass = getpass('password: ')
     api_base_url = 'https://{0}/api/'.format(aos_server)
     head_w_token = aos_login(api_base_url, aos_user, aos_pass)
-    print(head_w_token)
-    asn_range = {
-            'name': 'test_pool2',
-            'first': 403,
-            'last': 405
-    }
-    asn_create_data, asn_create_url = aos_asn_pool_create_data(api_base_url, asn_range)
-    asn_response = aos_put(asn_create_url, head_w_token, asn_create_data)
-    print(asn_response.status_code)
+    yaml_file = open('apstra_vars.yaml', 'r')
+    yaml_data = yaml.load(yaml_file, Loader=yaml.Loader)
+    yaml_file.close()
+    for asn_range in yaml_data['asn_ranges']:
+        asn_create_data, asn_create_url = aos_asn_pool_create_data(api_base_url, asn_range)
+        asn_response = aos_put(asn_create_url, head_w_token, asn_create_data)
+        print(asn_response.status_code)
+
+    asn_api_url = api_base_url + 'resources/asn-pools'
+    asn_ranges = aos_get(asn_api_url, head_w_token)
+    pprint(asn_ranges.json())
