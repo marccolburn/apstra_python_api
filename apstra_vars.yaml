@@ -8,3 +8,17 @@ asn_ranges:
   - name: 'test_pool3'
     first: 406
     last: 408
+
+ip_pools:
+  - name: 'test_ip_pool1'
+    network: '172.16.1.0/24'
+  - name: 'test_ip_pool2'
+    network: '172.16.2.0/24'
+
+vni_pools:
+  - name: 'test_vni_pool1'
+    first: 7001
+    last: 7002
+  - name: 'test_vni_pool2'
+    first: 7003
+    last: 7004

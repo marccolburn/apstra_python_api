@@ -2,6 +2,7 @@ from getpass import getpass
 from requests import request
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from pprint import pprint
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 import requests
 import sys
 import yaml
@@ -59,29 +60,18 @@ def aos_delete(api_url, headers, delete_pending_data):
                     sys.exit('error deleting element')
 
 
-def aos_asn_pool_create_data(api_base_url, asn_range):
-    '''Provides data structure and api path for creating ASN Pools'''
-    data = '''
-        {{
-         "display_name":"{0}",
-         "ranges": [
-           {{
-             "first": "{1}",
-             "last": "{2}"
-           }}
-        ]
-        }}
-           '''.format(asn_range['name'], asn_range['first'], asn_range['last'])
-
-    api_url = '{0}resources/asn-pools'.format(api_base_url)
-    return data, api_url
+def aos_create_data(var_data, template_name):
+    '''Provides data structure and api path for creating elements'''
+    template = env.get_template(template_name)
+    data = template.render(var_data)
+    return data
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--create", help="create elements passed, asn_pools")
-    parser.add_argument("--delete", help="delete elements passed, asn_pools")
-    parser.add_argument("--get", help="get elements passed, asn_pools")
+    parser.add_argument("--create", help="create elements passed, asn_pools, ip_pools")
+    parser.add_argument("--delete", help="delete elements passed, asn_pools, ip_pools")
+    parser.add_argument("--get", help="get elements passed, asn_pools, ip_pools")
     args = parser.parse_args()
     aos_server = '10.1.94.10'
     aos_user = 'admin'
@@ -92,14 +82,36 @@ if __name__ == '__main__':
     yaml_data = yaml.load(yaml_file, Loader=yaml.Loader)
     yaml_file.close()
     asn_api_url = api_base_url + 'resources/asn-pools'
-    if args.create and args.create == 'asn_pools':
-        for asn_range in yaml_data['asn_ranges']:
-            asn_create_data, asn_create_url = aos_asn_pool_create_data(api_base_url, asn_range)
-            asn_response = aos_put(asn_create_url, head_w_token, asn_create_data)
+    ip_pool_api_url = api_base_url + 'resources/ip-pools'
+    env = Environment(
+            loader=FileSystemLoader("templates"),
+            autoescape=select_autoescape()
+    )
+    if args.create:
+        pool_api_url = api_base_url + 'resources/{0}'.format(args.create.replace("_", "-"))
+        if args.create == 'asn_pools':
+            for asn_range in yaml_data['asn_ranges']:
+                template_name = "create_asn_pools.j2"
+                asn_create_data = aos_create_data(asn_range, template_name)
+                asn_response = aos_put(asn_api_url, head_w_token, asn_create_data)
+        else:
+            for pool in yaml_data[args.create]:
+                template_name = "create_{0}.j2".format(args.create)
+                create_data = aos_create_data(pool, template_name)
+                response = aos_put(pool_api_url, head_w_token, create_data)
 
-    if args.delete and args.delete == 'asn_pools':
-        aos_delete(asn_api_url, head_w_token, yaml_data['asn_ranges'])
+    if args.delete:
+        pool_api_url = api_base_url + 'resources/{0}'.format(args.delete.replace("_", "-"))
+        if args.delete == 'asn_pools':
+            aos_delete(asn_api_url, head_w_token, yaml_data['asn_ranges'])
+        else:
+            aos_delete(pool_api_url, head_w_token, yaml_data[args.delete])
 
-    if args.get and args.get == 'asn_pools':
-        asn_ranges = aos_get(asn_api_url, head_w_token)
-        pprint(asn_ranges.json())
+    if args.get:
+        pool_api_url = api_base_url + 'resources/{0}'.format(args.get.replace("_", "-"))
+        if args.get == 'asn_pools':
+            asn_ranges = aos_get(asn_api_url, head_w_token)
+            pprint(asn_ranges.json())
+        else:
+            var_data = aos_get(pool_api_url, head_w_token)
+            pprint(var_data.json())
