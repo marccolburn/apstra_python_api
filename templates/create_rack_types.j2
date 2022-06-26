@@ -1,0 +1,86 @@
+{
+  "description": "",
+  "tags": [],
+  "logical_devices": [
+    {
+      "panels": [
+        {
+          "panel_layout": {
+            "row_count": 2,
+            "column_count": 24
+          },
+          "port_indexing": {
+            "order": "T-B, L-R",
+            "start_index": 1,
+            "schema": "absolute"
+          },
+          "port_groups": [
+            {
+              "count": 48,
+              "speed": {
+                "unit": "G",
+                "value": 25
+              },
+              "roles": [
+                "generic",
+                "peer",
+                "access"
+              ]
+            }
+          ]
+        },
+        {
+          "panel_layout": {
+            "row_count": 2,
+            "column_count": 4
+          },
+          "port_indexing": {
+            "order": "T-B, L-R",
+            "start_index": 1,
+            "schema": "absolute"
+          },
+          "port_groups": [
+            {
+              "count": 8,
+              "speed": {
+                "unit": "G",
+                "value": 100
+              },
+              "roles": [
+                "spine"
+              ]
+            }
+          ]
+        }
+      ],
+      "display_name": "{{ logical_devices[0]['name'] }}",
+      "id": "{{ logical_devices[0]['name'] }}"
+    }
+  ],
+  "generic_systems": [],
+  "servers": [],
+  "leafs": [
+    {
+      "leaf_leaf_l3_link_speed": null,
+      "redundancy_protocol": "{{ leafs[0]['redundancy_protocol'] }}",
+      "leaf_leaf_link_port_channel_id": 0,
+      "leaf_leaf_l3_link_count": 0,
+      "logical_device": "{{ leafs[0]['logical_device'] }}",
+      "leaf_leaf_link_speed": null,
+      "link_per_spine_count": {{ leafs[0]['link_per_spine_count'] }},
+      "leaf_leaf_link_count": 0,
+      "tags": [],
+      "link_per_spine_speed": {
+        "unit": "G",
+        "value": {{ leafs[0]['link_per_spine_speed'] }}
+      },
+      "label": "{{ leafs[0]['name'] }}",
+      "mlag_vlan_id": 0,
+      "leaf_leaf_l3_link_port_channel_id": 0
+    }
+  ],
+  "access_switches": [],
+  "id": "{{ name }}",
+  "display_name": "{{ name }}",
+  "fabric_connectivity_design": "{{ fabric_connectivity_design }}"
+}
