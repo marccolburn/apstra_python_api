@@ -1,3 +1,7 @@
+server_ip: "10.1.94.10"
+server_port: "443"
+server_user: "admin"
+
 asn_ranges:
   - name: 'test_pool1'
     first: 400
@@ -11,9 +15,11 @@ asn_ranges:
 
 ip_pools:
   - name: 'test_ip_pool1'
-    network: '172.16.1.0/24'
+    subnets: 
+      - '172.16.1.0/24'
   - name: 'test_ip_pool2'
-    network: '172.16.2.0/24'
+    subnets: 
+      - '172.16.2.0/24'
 
 vni_pools:
   - name: 'test_vni_pool1'
