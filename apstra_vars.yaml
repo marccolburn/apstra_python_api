@@ -34,3 +34,13 @@ rack_types:
         logical_device: "AOS-48x25+8x100-1"
         link_per_spine_count: 2
         link_per_spine_speed: 100
+
+templates:
+  - name: "PYTHONTEMPLATE1"
+    overlay_type: "evpn"
+    fabric_addressing: "ipv4"
+    spine_count: 1
+    spine_logical_device: "AOS-8x100-1"
+    rack_type_name: "LABRACK25G"
+    rack_type_count: 1
+    template_type: "rack_based"

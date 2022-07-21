@@ -1,178 +1,40 @@
 {
-  "external_routing_policy": {
-    "export_policy": {
-      "spine_leaf_links": true,
-      "l3edge_server_links": true,
-      "l2edge_subnets": true,
-      "static_routes": false,
-      "loopbacks": true
-    },
-    "description": null,
-    "import_policy": "default_only",
-    "expect_default_ipv6_route": true,
-    "expect_default_ipv4_route": true,
-    "extra_export_routes": [],
-    "extra_import_routes": [],
-    "aggregate_prefixes": [],
-    "label": "Default_immutable"
-  },
-  "anti_affinity_policy": {
-    "max_links_per_port": 0,
-    "algorithm": "heuristic",
-    "max_per_system_links_per_port": 0,
-    "max_links_per_slot": 0,
-    "max_per_system_links_per_slot": 0,
-    "mode": "disabled"
-  },
-  "display_name": "LABTEMPLATE8100G",
+  "display_name": "{{ name }}",
   "virtual_network_policy": {
-    "overlay_control_protocol": "evpn"
+    "overlay_control_protocol": "{{ overlay_type }}"
   },
   "fabric_addressing_policy": {
-    "spine_leaf_links": "ipv4",
-    "spine_superspine_links": "ipv4"
+    "spine_leaf_links": "{{ fabric_addressing }}",
+    "spine_superspine_links": "{{ fabric_addressing }}"
   },
   "spine": {
-    "count": 1,
+    "count": {{ spine_count }},
     "link_per_superspine_count": 0,
     "tags": [],
     "logical_device": {
-      "panels": [
-        {
-          "panel_layout": {
-            "row_count": 1,
-            "column_count": 8
-          },
-          "port_indexing": {
-            "order": "T-B, L-R",
-            "start_index": 1,
-            "schema": "absolute"
-          },
-          "port_groups": [
-            {
-              "count": 8,
-              "speed": {
-                "unit": "G",
-                "value": 100
-              },
-              "roles": [
-                "superspine",
-                "leaf"
-              ]
-            }
-          ]
-        }
-      ],
-      "display_name": "AOS-8x100-1",
-      "id": "a0ae3493-f2fc-48ae-b0a3-9675170d05f8"
+      "display_name": "{{ spine_logical_device }}",
     },
     "link_per_superspine_speed": null
   },
-  "created_at": "2022-04-19T16:55:21.022189Z",
   "rack_type_counts": [
     {
-      "rack_type_id": "LABRACK25G",
+      "rack_type_id": "{{ rack_type_name }}",
       "count": 1
     }
   ],
   "dhcp_service_intent": {
     "active": true
   },
-  "last_modified_at": "2022-05-25T12:39:21.631978Z",
   "rack_types": [
     {
-      "description": "",
-      "tags": [],
-      "logical_devices": [
-        {
-          "panels": [
-            {
-              "panel_layout": {
-                "row_count": 2,
-                "column_count": 24
-              },
-              "port_indexing": {
-                "order": "T-B, L-R",
-                "start_index": 1,
-                "schema": "absolute"
-              },
-              "port_groups": [
-                {
-                  "count": 48,
-                  "speed": {
-                    "unit": "G",
-                    "value": 25
-                  },
-                  "roles": [
-                    "generic",
-                    "peer",
-                    "access"
-                  ]
-                }
-              ]
-            },
-            {
-              "panel_layout": {
-                "row_count": 2,
-                "column_count": 4
-              },
-              "port_indexing": {
-                "order": "T-B, L-R",
-                "start_index": 1,
-                "schema": "absolute"
-              },
-              "port_groups": [
-                {
-                  "count": 8,
-                  "speed": {
-                    "unit": "G",
-                    "value": 100
-                  },
-                  "roles": [
-                    "spine"
-                  ]
-                }
-              ]
-            }
-          ],
-          "display_name": "AOS-48x25+8x100-1",
-          "id": "AOS-48x25_8x100-1"
-        }
-      ],
-      "generic_systems": [],
-      "servers": [],
-      "leafs": [
-        {
-          "leaf_leaf_l3_link_speed": null,
-          "redundancy_protocol": "esi",
-          "leaf_leaf_link_port_channel_id": 0,
-          "leaf_leaf_l3_link_count": 0,
-          "logical_device": "AOS-48x25_8x100-1",
-          "leaf_leaf_link_speed": null,
-          "link_per_spine_count": 2,
-          "leaf_leaf_link_count": 0,
-          "tags": [],
-          "link_per_spine_speed": {
-            "unit": "G",
-            "value": 100
-          },
-          "label": "QFX5K48Y",
-          "mlag_vlan_id": 0,
-          "leaf_leaf_l3_link_port_channel_id": 0
-        }
-      ],
-      "access_switches": [],
-      "id": "LABRACK25G",
-      "display_name": "LABRACK25G",
-      "fabric_connectivity_design": "l3clos",
-      "created_at": "1970-01-01T00:00:00.000000Z",
-      "last_modified_at": "1970-01-01T00:00:00.000000Z"
+      "id": "{{ rack_type_name }}",
+      "display_name": "{{ rack_type_name }}",
+      "fabric_connectivity_design": "l3clos"
     }
   ],
   "capability": "blueprint",
   "asn_allocation_policy": {
     "spine_asn_scheme": "distinct"
   },
-  "type": "rack_based",
-  "id": "e98f039a-798d-46ec-8699-80eef0ded1f8"
+  "type": "{{ template_type }}"
 },

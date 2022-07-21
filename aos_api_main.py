@@ -32,6 +32,7 @@ def aos_login(api_base_url, aos_user, aos_pass):
 
 def aos_put(api_url, headers, data):
     '''PUT against API resource to create new item'''
+    pdb.set_trace()
     response = request("POST", api_url, data=data, headers=headers, verify=False)
     if response.status_code != 202 and response.status_code != 201:
         sys.exit('error: data post failed')
